@@ -12,6 +12,7 @@ async function background(type, extra = {}) {
 async function refresh() {
   const { pairing } = await chrome.storage.local.get("pairing");
   $("pairing-panel").hidden = Boolean(pairing);
+  $("pair-help").hidden = Boolean(pairing);
   $("paired").hidden = !pairing;
   $("start").disabled = !pairing;
   const status = await background("status");
@@ -27,14 +28,16 @@ $("pair").onclick = async () => {
       !["127.0.0.1", "localhost"].includes(url.hostname) ||
       !/^[a-f0-9]{48}$/.test(url.hash.slice(1))
     )
-      throw new Error("请粘贴本机启动时的完整工作台链接，包含 # 后的连接码");
+      throw new Error(
+        "请粘贴面板里复制的备用连接地址，或在面板点击「一键连接扩展」",
+      );
     const pairing = { base: url.origin, token: url.hash.slice(1) };
     const response = await fetch(`${pairing.base}/api/config`, {
       headers: { Authorization: `Bearer ${pairing.token}` },
       signal: AbortSignal.timeout(5000),
     });
     if (!response.ok)
-      throw new Error("连接码无效，请复制这次启动时的工作台链接");
+      throw new Error("连接已失效，请从应用菜单打开面板并重新连接");
     await chrome.storage.local.set({ pairing });
     $("pairing").value = "";
     message("");
@@ -42,7 +45,7 @@ $("pair").onclick = async () => {
   } catch (error) {
     message(
       error.message === "Failed to fetch"
-        ? "工作台未运行，请先执行 npm start"
+        ? "应用还未运行，请从应用菜单打开 Live Interpret"
         : error.message,
     );
   }
@@ -81,6 +84,6 @@ $("re-pair").onclick = async () => {
 $("dashboard").onclick = async () => {
   const { pairing } = await chrome.storage.local.get("pairing");
   if (pairing) chrome.tabs.create({ url: `${pairing.base}/#${pairing.token}` });
-  else message("请先启动本机服务并完成配对");
+  else message("请从应用菜单打开 Live Interpret，并在面板里一键连接扩展");
 };
 refresh().catch((error) => message(error.message));

@@ -12,6 +12,51 @@ async function forward(message) {
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
   if (message.target !== "background") return;
   (async () => {
+    if (
+      ["panel-probe", "panel-pair", "panel-extensions"].includes(message.type)
+    ) {
+      const senderUrl = new URL(sender.url || "https://invalid.example");
+      if (
+        senderUrl.protocol !== "http:" ||
+        !["127.0.0.1", "localhost"].includes(senderUrl.hostname) ||
+        senderUrl.origin !== message.base ||
+        !/^[a-f0-9]{48}$/.test(message.token || "")
+      ) {
+        throw new Error("仅接受本机面板的连接请求");
+      }
+      const { pairing } = await chrome.storage.local.get("pairing");
+      if (message.type === "panel-extensions") {
+        await chrome.tabs.create({ url: "chrome://extensions" });
+        return {
+          installed: true,
+          paired:
+            pairing?.base === message.base && pairing?.token === message.token,
+        };
+      }
+      if (message.type === "panel-pair") {
+        const response = await fetch(`${message.base}/api/config`, {
+          headers: { Authorization: `Bearer ${message.token}` },
+          signal: AbortSignal.timeout(4000),
+        });
+        if (!response.ok)
+          throw new Error("无法验证本机面板，请重新从应用菜单打开");
+        if (
+          (pairing?.base !== message.base ||
+            pairing?.token !== message.token) &&
+          (await offscreenExists())
+        )
+          await forward({ type: "stop" });
+        await chrome.storage.local.set({
+          pairing: { base: message.base, token: message.token },
+        });
+        return { installed: true, paired: true };
+      }
+      return {
+        installed: true,
+        paired:
+          pairing?.base === message.base && pairing?.token === message.token,
+      };
+    }
     if (message.type === "status")
       return (await offscreenExists())
         ? forward({ type: "status" })
@@ -29,7 +74,8 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       )
         throw new Error("请先打开 YouTube 或 Twitch 直播标签页");
       const { pairing } = await chrome.storage.local.get("pairing");
-      if (!pairing) throw new Error("请先粘贴工作台连接地址");
+      if (!pairing)
+        throw new Error("请先打开 Live Interpret 面板，点击「一键连接扩展」");
       if (!(await offscreenExists())) {
         await chrome.offscreen.createDocument({
           url: "offscreen.html",

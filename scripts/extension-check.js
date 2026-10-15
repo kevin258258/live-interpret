@@ -63,10 +63,23 @@ try {
     (await context.waitForEvent("serviceworker", { timeout: 15000 }));
   const id = new URL(worker.url()).host;
   console.log("Extension service worker loaded.");
-  await worker.evaluate((pairing) => chrome.storage.local.set({ pairing }), {
-    base,
-    token: app.token,
-  });
+  const panel = await context.newPage();
+  await panel.goto(`${base}/#${app.token}`);
+  await panel
+    .locator("#connect-label")
+    .filter({ hasText: "一键连接扩展" })
+    .waitFor();
+  await panel.locator("#connect").click();
+  await panel
+    .locator("#connect-label")
+    .filter({ hasText: "浏览器已连接" })
+    .waitFor();
+  const paired = await worker.evaluate(() =>
+    chrome.storage.local.get("pairing"),
+  );
+  assert.equal(paired.pairing.token, app.token);
+  assert.equal(paired.pairing.base, base);
+  console.log("One-click panel pairing passed.");
   await context.route("https://www.youtube.com/**", (route) =>
     route.fulfill({
       contentType: "text/html; charset=utf-8",

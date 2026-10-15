@@ -5,8 +5,8 @@ body {
   margin: 0;
   padding: 22px;
   width: 350px;
-  background: #111519;
-  color: #f3f3ee;
+  background: #141414;
+  color: #f3f3f3;
   font:
     13px/1.6 system-ui,
     sans-serif;
@@ -20,8 +20,8 @@ header {
 .mark {
   display: grid;
   place-items: center;
-  background: #dfed8a;
-  color: #111519;
+  background: #e3e3e3;
+  color: #141414;
   width: 38px;
   height: 38px;
   border-radius: 11px;
@@ -33,35 +33,35 @@ strong {
 }
 small {
   display: block;
-  color: #8d969b;
+  color: #949494;
 }
 .dot {
   margin-left: auto;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #6a727a;
+  background: #717171;
 }
 .dot.active {
-  background: #dfed8a;
-  box-shadow: 0 0 12px #dfed8a55;
+  background: #e3e3e3;
+  box-shadow: 0 0 12px #e3e3e355;
 }
 label {
   display: block;
-  color: #a7b0b6;
+  color: #afafaf;
   margin-bottom: 7px;
 }
 input {
   width: 100%;
-  background: #1b2126;
-  border: 1px solid #343d42;
+  background: #202020;
+  border: 1px solid #3b3b3b;
   border-radius: 8px;
   padding: 11px;
   color: #fff;
   margin-bottom: 10px;
 }
 input:focus {
-  outline: 2px solid #dfed8a;
+  outline: 2px solid #e3e3e3;
 }
 button {
   font: inherit;
@@ -76,8 +76,8 @@ button:disabled {
 }
 .primary {
   width: 100%;
-  background: #dfed8a;
-  color: #161a12;
+  background: #e3e3e3;
+  color: #191919;
   font-weight: 700;
   margin: 14px 0 8px;
   display: flex;
@@ -85,41 +85,47 @@ button:disabled {
 }
 .secondary {
   width: 100%;
-  background: #262e33;
-  color: #eef0e9;
+  background: #2d2d2d;
+  color: #efefef;
 }
 .link {
   padding: 0;
   background: none;
-  color: #bdcc9b;
+  color: #c5c5c5;
   font-size: 12px;
 }
 .connection {
   display: flex;
   justify-content: space-between;
-  color: #c5d1b0;
+  color: #cccccc;
 }
 p {
-  color: #969fa4;
+  color: #9d9d9d;
 }
 #message {
-  color: #efbd9a;
+  color: #c5c5c5;
   white-space: pre-wrap;
 }
 footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #293137;
+  border-top: 1px solid #303030;
   margin-top: 20px;
   padding-top: 15px;
-  color: #8d969b;
+  color: #949494;
   font-size: 11px;
 }
 kbd {
   font-family: inherit;
-  color: #bfc9ce;
+  color: #c7c7c7;
 }
 [hidden] {
   display: none !important;
+}
+summary {
+  cursor: pointer;
+  color: #aaaaaa;
+  font-size: 11px;
+  margin-bottom: 12px;
 }

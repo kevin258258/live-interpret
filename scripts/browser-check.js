@@ -7,6 +7,7 @@ import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createApplication } from "../server/index.js";
 import { encodeWav } from "../extension/lib/audio.js";
+import { createDesktopIntegration } from "../server/desktop.js";
 
 const { chromium } = await import(
   process.env.PLAYWRIGHT_MODULE
@@ -39,7 +40,16 @@ const upstream = createServer(async (request, response) => {
 });
 upstream.listen(0, "127.0.0.1");
 await once(upstream, "listening");
-const app = await createApplication({ directory });
+let shutdownRequested = false;
+const app = await createApplication({
+  directory,
+  desktop: createDesktopIntegration({
+    directory: join(directory, "applications"),
+  }),
+  onShutdown: async () => {
+    shutdownRequested = true;
+  },
+});
 app.server.listen(0, "127.0.0.1");
 await once(app.server, "listening");
 const base = `http://127.0.0.1:${app.server.address().port}`;
@@ -66,13 +76,18 @@ try {
     path: "artifacts/workspace-initial.png",
     fullPage: true,
   });
-  await page.getByRole("button", { name: "配置 API" }).click();
+  await page.locator("#watch").click();
+  await page.locator("#settings-dialog").waitFor({ state: "visible" });
   for (const kind of ["asr", "translation"]) {
     await page.locator(`#${kind}-base`).fill(provider);
     await page.locator(`#${kind}-model`).fill(`test-${kind}`);
     await page.locator(`#${kind}-key`).fill(`test-secret-${kind}`);
   }
-  await page.getByRole("button", { name: "保存配置" }).click();
+  await page.getByRole("button", { name: "保存设置" }).click();
+  await page.locator("#install-desktop").click();
+  await page.waitForFunction(() =>
+    document.getElementById("install-desktop").textContent.includes("已添加"),
+  );
   await page.waitForFunction(
     () => document.getElementById("asr-state").textContent === "test-asr",
   );
@@ -280,6 +295,11 @@ try {
     "",
   );
   assert.deepEqual(errors, []);
+  await page.locator("#quit-app").click();
+  await page.locator("#confirm-quit").click();
+  await page.locator("#shutdown-screen").waitFor({ state: "visible" });
+  await page.waitForTimeout(180);
+  assert.equal(shutdownRequested, true);
   console.log(
     "Browser checks passed: setup, demo, live API fixture, styles, glossary, export, narrow layout, fullscreen overlay, text injection, and stop.",
   );

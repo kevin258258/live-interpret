@@ -1,4 +1,5 @@
 import { readEvents } from "/events.js";
+import { initializePanel } from "/panel.js";
 
 const $ = (id) => document.getElementById(id);
 const hash = location.hash.slice(1);
@@ -16,6 +17,8 @@ let styleTimer;
 let captionTimer;
 let glossaryDirty = false;
 let extensionPath = "项目目录 / extension";
+let panel;
+let shuttingDown = false;
 
 function toast(text, error = false) {
   $("toast").textContent = text;
@@ -75,9 +78,8 @@ function applyConfig(value) {
   $("profile").value = value.profile;
   $("stage-language").textContent =
     `${{ ja: "日语", en: "英语", auto: "自动识别" }[value.language]} → 简体中文`;
-  $("asr-state").textContent = value.asr.model || "尚未配置接口";
-  $("translation-state").textContent =
-    value.translation.model || "尚未配置接口";
+  $("asr-state").textContent = value.asr.model || "尚未设置";
+  $("translation-state").textContent = value.translation.model || "尚未设置";
   $("asr-dot").classList.toggle(
     "ready",
     Boolean(value.asr.baseUrl && value.asr.model),
@@ -92,6 +94,7 @@ function applyConfig(value) {
     .split("\n")
     .filter((line) => line.trim()).length;
   applyAppearance(value.appearance);
+  panel?.render();
 }
 function applySession(value) {
   const changed = session?.id !== value?.id;
@@ -117,7 +120,6 @@ function applySession(value) {
   $("demo").disabled = active && !demo;
   $("language").disabled = active && !demo;
   $("profile").disabled = active && !demo;
-  $("step-extension").classList.toggle("complete", Boolean(active && !demo));
   $("stage-hint").textContent =
     active && demo ? "示例内容，非实时识别" : "保留主播原声";
   if (changed) {
@@ -169,7 +171,7 @@ function small(text) {
 function updateMeter(level) {
   [...$("audio-level").children].forEach((bar, index) => {
     bar.style.height = `${4 + Math.min(1, level) * (index % 2 ? 16 : 11)}px`;
-    bar.style.background = level > 0.03 ? "#c8de8a" : "#526b53";
+    bar.style.background = level > 0.03 ? "#dddddd" : "#626262";
   });
 }
 function elapsed(at) {
@@ -280,7 +282,7 @@ async function connectEvents() {
     });
     if (response.status === 401) {
       updateConnection(false);
-      toast("请打开 npm start 显示的完整工作台链接，包含 # 后的连接码。", true);
+      toast("请从应用菜单打开 Live Interpret，连接信息会自动带入。", true);
       return;
     }
     if (!response.ok) throw new Error("连接失败");
@@ -290,7 +292,7 @@ async function connectEvents() {
     /* Status below also handles a server restart. */
   }
   updateConnection(false);
-  reconnectTimer = setTimeout(connectEvents, 2000);
+  if (!shuttingDown) reconnectTimer = setTimeout(connectEvents, 2000);
 }
 async function save(patch) {
   const value = await api("/api/config", "PUT", patch);
@@ -345,7 +347,7 @@ $("settings-form").onsubmit = async (event) => {
     await save(patch);
     for (const key of ["asr", "translation"]) $(`${key}-key`).value = "";
     $("settings-dialog").close();
-    toast("API 配置已保存。在直播标签页点击扩展开始同传。");
+    toast("设置已保存。连接浏览器后，即可开始观看。");
   } catch (error) {
     $("settings-error").textContent = error.message;
   } finally {
@@ -480,5 +482,17 @@ $("export").onclick = () => {
 };
 window.addEventListener("beforeunload", () => {
   clearTimeout(reconnectTimer);
+});
+panel = initializePanel({
+  token,
+  api,
+  getConfig: () => config,
+  openSettings,
+  openConnect,
+  toast,
+  onShutdown: () => {
+    shuttingDown = true;
+    clearTimeout(reconnectTimer);
+  },
 });
 connectEvents();

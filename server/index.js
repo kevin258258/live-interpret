@@ -6,6 +6,13 @@ import { resolve, join, extname } from "node:path";
 import { ConfigStore, publicConfig, profiles } from "./config.js";
 import { LiveSession } from "./session.js";
 import { translate, validateWav } from "./providers.js";
+import { createDesktopIntegration } from "./desktop.js";
+import {
+  applicationId,
+  version,
+  persistentToken,
+  dataDirectory,
+} from "./runtime.js";
 
 const project = fileURLToPath(new URL("../", import.meta.url));
 const mime = {
@@ -17,6 +24,7 @@ const mime = {
 const staticFiles = new Map([
   ["/", "web/index.html"],
   ["/app.js", "web/app.js"],
+  ["/panel.js", "web/panel.js"],
   ["/style.css", "web/style.css"],
   ["/events.js", "extension/lib/events.js"],
   ["/mark.svg", "web/mark.svg"],
@@ -75,6 +83,8 @@ export async function createApplication({
   token = randomBytes(24).toString("hex"),
   providers,
   now,
+  desktop = createDesktopIntegration(),
+  onShutdown,
 } = {}) {
   const store = await new ConfigStore(directory).load();
   const clients = new Set();
@@ -146,9 +156,22 @@ export async function createApplication({
       const route = `${request.method} ${url.pathname}`;
       if (route === "GET /api/info")
         return send(response, 200, {
+          application: applicationId,
+          pid: process.pid,
           extensionPath: join(project, "extension"),
-          version: "0.1.0",
+          version,
+          desktop: await desktop.status(),
+          canShutdown: Boolean(onShutdown),
         });
+      if (route === "POST /api/desktop/install")
+        return send(response, 200, await desktop.install());
+      if (route === "POST /api/shutdown") {
+        if (!onShutdown)
+          return send(response, 409, { error: "当前运行方式不支持退出服务" });
+        send(response, 200, { ok: true });
+        setTimeout(() => Promise.resolve(onShutdown()).catch(() => {}), 100);
+        return;
+      }
       if (route === "GET /api/config")
         return send(response, 200, publicConfig(store.value));
       if (route === "PUT /api/config") {
@@ -279,11 +302,16 @@ if (
   import.meta.url === pathToFileURL(resolve(process.argv[1])).href
 ) {
   const port = Number(process.env.PORT ?? 43821);
-  const directory = process.env.LIVE_INTERPRET_DATA_DIR
-    ? resolve(process.env.LIVE_INTERPRET_DATA_DIR)
-    : join(project, ".local");
+  const directory = dataDirectory();
   try {
-    const app = await createApplication({ directory });
+    const app = await createApplication({
+      directory,
+      token: await persistentToken(directory),
+      onShutdown: async () => {
+        await app.close();
+        process.exit(0);
+      },
+    });
     app.server.on("error", (error) => {
       console.error(
         error.code === "EADDRINUSE"
@@ -297,7 +325,12 @@ if (
       await mkdir(directory, { recursive: true, mode: 0o700 });
       await writeFile(
         join(directory, "connection.json"),
-        JSON.stringify({ url }),
+        JSON.stringify({
+          url,
+          pid: process.pid,
+          application: applicationId,
+          version,
+        }),
         { mode: 0o600 },
       );
       console.log(

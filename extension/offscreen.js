@@ -191,7 +191,7 @@ async function start(message) {
     await stop();
     throw new Error(
       error.message.includes("fetch")
-        ? "无法连接本机工作台，请确认 npm start 正在运行"
+        ? "无法连接本机应用，请从应用菜单打开 Live Interpret"
         : error.message,
     );
   }

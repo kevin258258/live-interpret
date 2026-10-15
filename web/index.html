@@ -2,20 +2,20 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="/mark.svg" type="image/svg+xml" />
-    <title>Live Interpret · 实时字幕工作台</title>
     <link rel="stylesheet" href="/style.css" />
+    <title>Live Interpret · 直播字幕</title>
   </head>
   <body>
     <aside class="sidebar">
       <a class="brand" href="/"
-        ><img src="/mark.svg" alt="" width="35" height="35" /><span
-          >Live Interpret<small>听懂此刻，留在现场。</small></span
+        ><img src="/mark.svg" alt="" width="36" height="36" /><span
+          >Live Interpret<small>现场，听得懂。</small></span
         ></a
       >
-      <div class="nav-label">你的观看空间</div>
+      <div class="nav-label">YOUR SPACE</div>
       <nav aria-label="主导航">
         <button class="nav-item active" data-view="studio">
           <span>◉</span> 字幕工作台 <kbd>01</kbd></button
@@ -25,76 +25,97 @@
         </button>
       </nav>
       <div class="sidebar-note">
-        <span class="tiny-label">BUILT FOR THE LIVE MOMENT</span>
-        <p>原来的声音，<br />熟悉的语言。</p>
+        <span class="tiny-label">LESS DISTANCE. MORE LIVE.</span>
+        <p>声音如初。<br />理解无界。</p>
         <div class="mini-wave" aria-hidden="true">
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i
-          ><i></i><i></i><i></i>
+          ><i></i><i></i>
         </div>
       </div>
       <div class="local-status">
         <span class="status-dot" id="server-dot"></span>
         <div id="server-status">
-          正在连接本机服务<small>127.0.0.1 · LOCAL ENGINE</small>
+          正在连接本机服务<small>关闭面板不影响同传</small>
         </div>
         <span class="local-symbol">↗</span>
       </div>
-      <div class="version">LINUX FIRST <span>v0.1.0</span></div>
+      <div class="version">LINUX DESKTOP <span>v0.2.0</span></div>
     </aside>
     <main>
       <header class="topbar">
         <div class="breadcrumb">
-          工作空间 <span>/</span> <strong id="page-crumb">字幕工作台</strong>
+          你的空间 <span>/</span> <strong id="page-crumb">字幕工作台</strong>
         </div>
         <div class="topbar-right">
           <span class="privacy"
-            ><span class="status-dot muted"></span>配置保存在本机</span
+            ><span class="status-dot muted"></span>设置已安全保存在本机</span
           ><button
             class="icon-button"
             id="settings-top"
-            aria-label="打开接口设置"
+            aria-label="打开服务设置"
           >
-            ⚙
+            ⚙</button
+          ><button
+            class="icon-button"
+            id="quit-app"
+            aria-label="退出应用"
+            hidden
+          >
+            ⏻
           </button>
         </div>
       </header>
       <section class="page" id="studio-view">
         <div class="page-title">
           <div>
-            <div class="eyebrow">YOUR STREAM, IN YOUR LANGUAGE</div>
-            <h1>听懂每一个现场<span>。</span></h1>
-            <p>看喜欢的直播，让字幕跟上你的好奇心。</p>
+            <div class="eyebrow">
+              <span class="eyebrow-line"></span> LIVE INTERPRET / DESKTOP 02
+            </div>
+            <h1>不止听见<span>。</span></h1>
+            <p>熟悉的原声，读得懂的现场。</p>
           </div>
           <div class="title-actions">
-            <button class="button secondary" id="demo">
+            <button class="button ghost" id="demo">
               ▷ <span>体验字幕示例</span></button
-            ><button class="button primary" id="settings">
-              配置 API <span>↗</span>
+            ><button class="button secondary" id="settings">服务设置</button
+            ><button class="button primary" id="watch">
+              开始观看 <span>↗</span>
             </button>
           </div>
         </div>
         <div class="setup-strip" id="setup-strip">
-          <span class="step complete"><b>1</b> 本机服务就绪</span
+          <span class="step complete"><b>01</b> 本机服务就绪</span
           ><span class="step-line"></span
-          ><button class="step" id="step-api"><b>2</b> 配置识别与翻译</button
+          ><button class="step" id="step-api"><b>02</b> 设置翻译服务</button
           ><span class="step-line"></span
           ><button class="step" id="step-extension">
-            <b>3</b> 连接直播标签页 <span>↗</span>
+            <b>03</b> <span id="extension-step-label">连接浏览器</span
+            ><span>↗</span>
           </button>
         </div>
+        <section class="desktop-banner" aria-label="应用启动入口">
+          <span class="desktop-glyph" aria-hidden="true">▦</span>
+          <div>
+            <strong>下一次，点图标就好。</strong>
+            <p id="desktop-status">添加到应用菜单，无需打开终端。</p>
+          </div>
+          <button class="button secondary small" id="install-desktop">
+            添加到应用菜单 <span>＋</span>
+          </button>
+        </section>
         <div class="studio-grid">
           <div class="workspace-column">
             <section class="card preview-card" aria-label="实时字幕预览">
               <div class="card-heading">
                 <span
-                  ><span class="status-dot" id="session-dot"></span>
-                  <strong>实时字幕</strong></span
+                  ><span class="status-dot" id="session-dot"></span
+                  ><strong>实时字幕</strong></span
                 ><span class="badge" id="mode-badge">等待连接</span>
               </div>
               <div class="caption-stage" id="caption-stage">
                 <div class="stage-label">
                   <span class="stage-square"></span
-                  ><span id="source-title">你的下一个现场，从这里开始</span>
+                  ><span id="source-title">下一个现场，从这里开始</span>
                 </div>
                 <div class="stage-art" aria-hidden="true">
                   <div class="orbit orbit-one"></div>
@@ -103,9 +124,9 @@
                   <div class="orbit-point"></div>
                 </div>
                 <div class="stage-empty" id="stage-empty">
-                  <strong>把注意力，留给喜欢的人。</strong
+                  <strong>喜欢的声音，不必隔着语言。</strong
                   ><span
-                    >连接直播后，中文字幕会出现在播放器上。<br />这里同步显示字幕，方便调节阅读效果。</span
+                    >连接直播，字幕会直接出现在播放器上。<br />在这里，调成最适合你的阅读方式。</span
                   >
                 </div>
                 <div class="stage-captions" id="stage-captions" hidden>
@@ -119,8 +140,8 @@
                   </div>
                 </div>
                 <div class="stage-bottom">
-                  <span id="stage-language">日语 <span>→</span> 简体中文</span
-                  ><span id="stage-hint">保留主播原声</span>
+                  <span id="stage-language">日语 → 简体中文</span
+                  ><span id="stage-hint">主播原声，完整保留</span>
                 </div>
               </div>
               <div class="preview-controls">
@@ -147,8 +168,8 @@
             <section class="card history-card">
               <div class="card-heading">
                 <span
-                  ><strong>此刻的对话</strong>
-                  <span class="count-badge" id="caption-count">0</span></span
+                  ><strong>此刻的对话</strong
+                  ><span class="count-badge" id="caption-count">0</span></span
                 ><button class="text-button" id="export" disabled>
                   ↓ 导出文本
                 </button>
@@ -157,14 +178,14 @@
                 <div class="history-empty" id="history-empty">
                   <span>“</span>
                   <div>
-                    还没有字幕记录<small
-                      >开始同传后，在这里回看没听清的那一句。</small
+                    把刚才那句话，留在这里。<small
+                      >开始同传后，可以随时回看字幕。</small
                     >
                   </div>
                 </div>
               </div>
               <div class="history-footer">
-                <span>仅在本次运行中保留最近字幕</span
+                <span>仅保留本次会话的最近记录</span
                 ><label
                   ><input type="checkbox" id="follow" checked /> 跟随最新</label
                 >
@@ -174,31 +195,39 @@
           <aside class="right-column">
             <section class="card source-card">
               <div class="card-heading">
-                <strong>连接你的直播</strong><span class="subtle">01</span>
+                <strong>进入现场</strong
+                ><span class="subtle">01 / CONNECT</span>
               </div>
               <p class="card-description">
-                在熟悉的播放器里，<br />多一层听得懂的字幕。
+                选喜欢的平台。<br />把剩下的交给字幕。
               </p>
               <div class="platforms">
-                <div>
-                  <span class="platform-icon youtube">▶</span
+                <a
+                  href="https://www.youtube.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><span class="platform-icon youtube">▶</span
                   ><span>YouTube<small>直播 · 视频</small></span
-                  ><span class="platform-status">支持入口</span>
-                </div>
-                <div>
-                  <span class="platform-icon twitch">▣</span
+                  ><span class="platform-status">打开 ↗</span></a
+                ><a
+                  href="https://www.twitch.tv/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><span class="platform-icon twitch">▣</span
                   ><span>Twitch<small>直播 · 回放</small></span
-                  ><span class="platform-status">支持入口</span>
-                </div>
+                  ><span class="platform-status">打开 ↗</span></a
+                >
               </div>
               <button class="button primary full" id="connect">
-                连接浏览器扩展 <span>↗</span>
+                <span id="connect-label">连接浏览器扩展</span><span>↗</span>
               </button>
-              <div class="source-footnote">仅采集你主动选择的标签页</div>
+              <div class="source-footnote" id="browser-status">
+                仅采集你主动选择的标签页
+              </div>
             </section>
             <section class="card pipeline-card">
               <div class="card-heading">
-                <strong>处理状态</strong><span class="subtle">02</span>
+                <strong>此刻状态</strong><span class="subtle">02 / STATUS</span>
               </div>
               <div class="pipeline-row">
                 <span class="pipeline-symbol">≋</span>
@@ -209,13 +238,13 @@
               </div>
               <div class="pipeline-row">
                 <span class="pipeline-symbol">あ</span>
-                <div>语音识别<small id="asr-state">尚未配置接口</small></div>
+                <div>语音识别<small id="asr-state">尚未设置</small></div>
                 <span class="pipeline-dot" id="asr-dot"></span>
               </div>
               <div class="pipeline-row">
                 <span class="pipeline-symbol">译</span>
                 <div>
-                  中文翻译<small id="translation-state">尚未配置接口</small>
+                  中文翻译<small id="translation-state">尚未设置</small>
                 </div>
                 <span class="pipeline-dot" id="translation-dot"></span>
               </div>
@@ -233,7 +262,7 @@
             </section>
             <section class="card style-card">
               <div class="card-heading">
-                <strong>字幕，舒服一点</strong><span class="subtle">03</span>
+                <strong>舒服地读</strong><span class="subtle">03 / STYLE</span>
               </div>
               <label class="range-label" for="font-size"
                 >文字大小 <output id="font-size-value">30 px</output></label
@@ -262,21 +291,21 @@
               /><label class="switch-row" for="show-original"
                 >同时显示原文<input id="show-original" type="checkbox" checked
               /></label>
-              <div class="style-note">样式实时同步到直播字幕层</div>
+              <div class="style-note">样式会同步到直播画面</div>
             </section>
           </aside>
         </div>
         <footer class="page-footer">
-          <span>让字幕陪伴观看，让原声保留温度。</span
+          <span>ORIGINAL VOICES. A SHARED MOMENT.</span
           ><span>EN / JA → 简体中文</span>
         </footer>
       </section>
       <section class="page" id="glossary-view" hidden>
         <div class="page-title">
           <div>
-            <div class="eyebrow">A LITTLE CONTEXT GOES A LONG WAY</div>
+            <div class="eyebrow">THE WORDS THAT MATTER TO YOU</div>
             <h1>熟悉的名字，准确的表达<span>。</span></h1>
-            <p>把主播名、角色名和常用梗，留在你的个人术语表里。</p>
+            <p>主播、角色、游戏和常用梗，都可以有自己的译法。</p>
           </div>
         </div>
         <section class="card glossary-card">
@@ -288,7 +317,7 @@
             placeholder="配信 = 直播&#10;切り抜き = 直播切片&#10;推し = 最喜欢的主播"
           ></textarea>
           <div class="glossary-bottom">
-            <p>术语将发送给你配置的识别与翻译服务。保存后对后续片段生效。</p>
+            <p>保存后用于后续识别与翻译，已显示的字幕不会改变。</p>
             <button class="button primary" id="save-glossary">
               保存术语表 <span>↗</span>
             </button>
@@ -300,9 +329,11 @@
       <form id="settings-form">
         <div class="dialog-heading">
           <div>
-            <div class="eyebrow">BRING YOUR OWN API</div>
-            <h2 id="settings-heading">连接你的模型服务</h2>
-            <p>识别与翻译可使用不同服务。支持 OpenAI 兼容接口。</p>
+            <div class="eyebrow">SET UP ONCE. KEEP WATCHING.</div>
+            <h2 id="settings-heading">设置翻译服务</h2>
+            <p>
+              填入服务商提供的信息，只需设置一次。识别和翻译可以使用不同服务。
+            </p>
           </div>
           <button
             type="button"
@@ -319,65 +350,71 @@
               <span>01</span> 语音识别 <small>AUDIO → TEXT</small>
             </legend>
             <label
-              >API 基础地址<input
+              >服务地址<input
                 id="asr-base"
                 type="url"
                 placeholder="https://api.example.com/v1"
                 autocomplete="off" /></label
             ><label
-              >识别模型名<input
+              >识别模型<input
                 id="asr-model"
-                placeholder="服务商提供的转写模型 ID"
+                placeholder="服务商提供的模型名称"
                 autocomplete="off" /></label
             ><label
-              >API 密钥<input
+              >访问密钥<input
                 id="asr-key"
                 type="password"
-                placeholder="可留空（无鉴权的本地服务）"
-                autocomplete="new-password" /></label
-            ><label class="clear-key"
-              ><input type="checkbox" id="asr-clear" />
-              移除已保存的识别密钥</label
-            >
-            <p class="endpoint-note">
-              需要支持 /audio/transcriptions<br />接收 WAV 音频，返回 JSON
-              text。
-            </p>
+                placeholder="粘贴你的密钥，本地免鉴权服务可留空"
+                autocomplete="new-password"
+            /></label>
+            <details class="provider-details">
+              <summary>兼容格式与密钥选项</summary>
+              <label class="clear-key"
+                ><input type="checkbox" id="asr-clear" />
+                移除已保存的识别密钥</label
+              >
+              <p class="endpoint-note">
+                支持 OpenAI 兼容的 /audio/transcriptions 接口，接收 WAV，返回
+                JSON text。
+              </p>
+            </details>
           </fieldset>
           <fieldset>
             <legend><span>02</span> 中文翻译 <small>TEXT → 中文</small></legend>
             <label
-              >API 基础地址<input
+              >服务地址<input
                 id="translation-base"
                 type="url"
                 placeholder="https://api.example.com/v1"
                 autocomplete="off" /></label
             ><label
-              >翻译模型名<input
+              >翻译模型<input
                 id="translation-model"
-                placeholder="服务商提供的对话模型 ID"
+                placeholder="服务商提供的模型名称"
                 autocomplete="off" /></label
             ><label
-              >API 密钥<input
+              >访问密钥<input
                 id="translation-key"
                 type="password"
-                placeholder="可留空（无鉴权的本地服务）"
-                autocomplete="new-password" /></label
-            ><label class="clear-key"
-              ><input type="checkbox" id="translation-clear" />
-              移除已保存的翻译密钥</label
-            >
-            <p class="endpoint-note">
-              需要支持 /chat/completions<br />接收文本，返回
-              choices.message.content。
-            </p>
+                placeholder="粘贴你的密钥，本地免鉴权服务可留空"
+                autocomplete="new-password"
+            /></label>
+            <details class="provider-details">
+              <summary>兼容格式与密钥选项</summary>
+              <label class="clear-key"
+                ><input type="checkbox" id="translation-clear" />
+                移除已保存的翻译密钥</label
+              >
+              <p class="endpoint-note">
+                支持 OpenAI 兼容的 /chat/completions 接口，返回
+                choices.message.content。
+              </p>
+            </details>
           </fieldset>
         </div>
         <div class="settings-note">
           <span>⌑</span>
-          <p>
-            密钥仅保存在本机，不会发送给直播网页。开始同传后，音频与识别文本会发送到你配置的服务。
-          </p>
+          <p>密钥只保存在本机。开始同传后，音频和文本将发送到你选择的服务。</p>
         </div>
         <div id="settings-error" class="form-error" role="alert"></div>
         <div class="dialog-actions">
@@ -386,7 +423,7 @@
           ><span class="dialog-spacer"></span
           ><button type="button" data-close class="button ghost">取消</button
           ><button type="submit" id="save-settings" class="button primary">
-            保存配置 <span>↗</span>
+            保存设置 <span>↗</span>
           </button>
         </div>
         <div id="test-result" class="test-result" role="status"></div>
@@ -395,9 +432,11 @@
     <dialog id="connect-dialog" aria-labelledby="connect-heading">
       <div class="dialog-heading">
         <div>
-          <div class="eyebrow">ONE-TIME SETUP</div>
+          <div class="eyebrow">CONNECT YOUR BROWSER</div>
           <h2 id="connect-heading">把字幕带进直播间</h2>
-          <p>首次安装后，每次只需要在直播页面点击扩展开始。</p>
+          <p id="extension-dialog-status">
+            首次安装后，一键连接；以后直接在直播页开始同传。
+          </p>
         </div>
         <button class="close-button" data-close aria-label="关闭连接说明">
           ×
@@ -405,14 +444,13 @@
       </div>
       <ol class="install-steps">
         <li>
-          <span>1</span>
+          <span>01</span>
           <div>
-            <strong>加载浏览器扩展</strong>
+            <strong>安装浏览器扩展</strong>
             <p>
               打开
               <code>chrome://extensions</code
-              >，开启「开发者模式」，点击「加载已解压的扩展程序」，选择项目的
-              extension 文件夹。
+              >，开启「开发者模式」，选择「加载已解压的扩展程序」，然后选择下面的文件夹。
             </p>
             <div class="copy-row">
               <code id="extension-path">项目目录 / extension</code
@@ -420,37 +458,105 @@
                 复制路径
               </button>
             </div>
-          </div>
-        </li>
-        <li>
-          <span>2</span>
-          <div>
-            <strong>配对本机工作台</strong>
-            <p>
-              点击下方按钮复制连接地址，粘贴到扩展的「本机工作台连接地址」并连接。服务重启后需要重新配对。
-            </p>
-            <button class="button secondary" id="copy-connection">
-              复制工作台连接地址 <span>⧉</span>
+            <button
+              class="text-button extension-manager"
+              id="extension-manager"
+            >
+              复制扩展管理地址 ↗
             </button>
           </div>
         </li>
         <li>
-          <span>3</span>
+          <span>02</span>
+          <div>
+            <strong>连接当前面板</strong>
+            <p>
+              安装后刷新一次面板，再点击「一键连接扩展」。连接会被记住，无需复制连接码。
+            </p>
+            <div class="extension-actions">
+              <button class="button primary" id="pair-extension" disabled>
+                一键连接扩展 <span>↗</span></button
+              ><button class="button secondary" id="refresh-extension">
+                安装好了，刷新面板
+              </button>
+            </div>
+            <details class="advanced-connection">
+              <summary>手动连接（备用）</summary>
+              <button class="text-button" id="copy-connection">
+                复制工作台连接地址 ⧉
+              </button>
+            </details>
+          </div>
+        </li>
+        <li>
+          <span>03</span>
           <div>
             <strong>打开直播，开始同传</strong>
             <p>
               在 YouTube／Twitch 标签页点击扩展
-              →「开始同传」。播放器全屏后也会显示字幕；按
-              <kbd>Alt + Shift + S</kbd> 隐藏或显示。
+              →「开始同传」。全屏后字幕也会跟随；按
+              <kbd>Alt + Shift + S</kbd> 隐藏或显示字幕。
             </p>
           </div>
         </li>
       </ol>
       <div class="connection-note">
-        首版使用 Chrome／Chromium 116+。Firefox
-        暂未适配。安装扩展前已打开的直播页面需要刷新一次。
+        支持 Chrome／Chromium。浏览器会要求你首次手动安装扩展；Firefox
+        暂未适配。
       </div>
     </dialog>
+    <dialog id="watch-dialog" aria-labelledby="watch-heading">
+      <div class="dialog-heading">
+        <div>
+          <div class="eyebrow">YOUR NEXT LIVE MOMENT</div>
+          <h2 id="watch-heading">去哪一个现场？</h2>
+          <p>
+            打开直播后，点击浏览器工具栏里的 Live Interpret，再点「开始同传」。
+          </p>
+        </div>
+        <button class="close-button" data-close aria-label="关闭观看入口">
+          ×
+        </button>
+      </div>
+      <div class="watch-platforms">
+        <a
+          href="https://www.youtube.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><span class="watch-platform-icon">▶</span><strong>YouTube</strong
+          ><span>直播、视频，以及喜欢的声音。</span><b>↗</b></a
+        ><a
+          href="https://www.twitch.tv/"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><span class="watch-platform-icon">▣</span><strong>Twitch</strong
+          ><span>即时发生，和大家一起在场。</span><b>↗</b></a
+        >
+      </div>
+    </dialog>
+    <dialog id="quit-dialog" aria-labelledby="quit-heading">
+      <div class="dialog-heading">
+        <div>
+          <div class="eyebrow">SEE YOU NEXT STREAM</div>
+          <h2 id="quit-heading">结束这一次现场？</h2>
+          <p>
+            将停止当前同传并退出本机服务。下次点击应用菜单中的 Live Interpret
+            即可重新打开。
+          </p>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button class="button secondary" data-close>继续留在这里</button
+        ><button class="button primary" id="confirm-quit">退出应用</button>
+      </div>
+    </dialog>
+    <div id="shutdown-screen" class="shutdown-screen" hidden>
+      <img src="/mark.svg" alt="" width="64" height="64" />
+      <div class="eyebrow">UNTIL NEXT TIME</div>
+      <h1>下个现场见。</h1>
+      <p>Live Interpret 已退出。下次从应用菜单打开即可。</p>
+      <span>现在可以关闭这个窗口。</span>
+    </div>
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
     <script type="module" src="/app.js"></script>
   </body>

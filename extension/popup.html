@@ -8,20 +8,22 @@
   <body>
     <header>
       <span class="mark">li</span>
-      <div>
-        <strong>Live Interpret</strong><small>听懂此刻，留在现场。</small>
-      </div>
+      <div><strong>Live Interpret</strong><small>现场，听得懂。</small></div>
       <span class="dot" id="status-dot"></span>
     </header>
-    <div id="pairing-panel">
+    <p id="pair-help">
+      从应用菜单打开 Live Interpret，在面板里点击「一键连接扩展」即可。
+    </p>
+    <details id="pairing-panel">
+      <summary>手动连接（备用）</summary>
       <label for="pairing">本机工作台连接地址</label
       ><input
         id="pairing"
         type="password"
-        placeholder="粘贴 npm start 显示的完整链接"
+        placeholder="粘贴面板提供的备用连接地址"
         autocomplete="off"
       /><button id="pair" class="secondary">连接工作台</button>
-    </div>
+    </details>
     <div id="paired" hidden>
       <div class="connection">
         已配对本机工作台 <button id="re-pair" class="link">更换</button>
@@ -32,7 +34,7 @@
     <button id="start" class="primary">开始同传 <span>↗</span></button>
     <button id="stop" class="secondary" hidden>停止同传</button>
     <footer>
-      <button id="dashboard" class="link">打开工作台</button
+      <button id="dashboard" class="link">打开面板</button
       ><span>隐藏字幕 <kbd>Alt ⇧ S</kbd></span>
     </footer>
     <script type="module" src="popup.js"></script>
