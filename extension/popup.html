@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>Live Interpret</title>
+  </head>
+  <body>
+    <header>
+      <span class="mark">li</span>
+      <div>
+        <strong>Live Interpret</strong><small>听懂此刻，留在现场。</small>
+      </div>
+      <span class="dot" id="status-dot"></span>
+    </header>
+    <div id="pairing-panel">
+      <label for="pairing">本机工作台连接地址</label
+      ><input
+        id="pairing"
+        type="password"
+        placeholder="粘贴 npm start 显示的完整链接"
+        autocomplete="off"
+      /><button id="pair" class="secondary">连接工作台</button>
+    </div>
+    <div id="paired" hidden>
+      <div class="connection">
+        已配对本机工作台 <button id="re-pair" class="link">更换</button>
+      </div>
+      <p>在当前 YouTube／Twitch 标签页开始，字幕会直接显示在播放器上。</p>
+    </div>
+    <div id="message" role="status" aria-live="polite"></div>
+    <button id="start" class="primary">开始同传 <span>↗</span></button>
+    <button id="stop" class="secondary" hidden>停止同传</button>
+    <footer>
+      <button id="dashboard" class="link">打开工作台</button
+      ><span>隐藏字幕 <kbd>Alt ⇧ S</kbd></span>
+    </footer>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "live-interpret",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Live Chinese subtitles for YouTube and Twitch, with your own API providers.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test tests/*.test.js",
+    "check": "node scripts/check.js",
+    "test:browser": "node scripts/browser-check.js",
+    "test:extension": "node scripts/extension-check.js"
+  }
+}

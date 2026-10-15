@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Live Interpret · 直播中文字幕",
+  "description": "为 YouTube 和 Twitch 叠加英日实时中文字幕。连接你本机的 Live Interpret 工作台。",
+  "version": "0.1.0",
+  "minimum_chrome_version": "116",
+  "permissions": ["tabCapture", "offscreen", "storage", "activeTab"],
+  "host_permissions": ["http://127.0.0.1/*", "http://localhost/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_popup": "popup.html", "default_title": "直播中文字幕" },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://www.twitch.tv/*",
+        "https://youtube.com/*",
+        "https://twitch.tv/*"
+      ],
+      "js": ["overlay.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "commands": {
+    "toggle-subtitles": {
+      "suggested_key": { "default": "Alt+Shift+S" },
+      "description": "显示或隐藏字幕"
+    }
+  }
+}
